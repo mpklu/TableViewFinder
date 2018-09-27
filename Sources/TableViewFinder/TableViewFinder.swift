@@ -7,18 +7,8 @@
 
 import Foundation
 
-class Table: CustomStringConvertible {
-	var id: String = ""
-	var xib: URL = URL(fileURLWithPath: "/")
-	var outletName: String = ""
-	var viewBased: Bool = false
-	var description: String {
-		return "\(xib.lastPathComponent):(\(outletName) \(viewBased ? "view-based":  "cell-based"))"
-	}
-}
-
 class TableViewFinder: NSObject, XMLParserDelegate {
-	var tableInfo = [URL: [Table]]()
+	var tableInfo = [String: [Table]]()
 	var outletMap = [String: String]()
 
 	var xibURLArray: [URL] = []
@@ -36,10 +26,8 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 	}
 
 	func readFile(_ file: URL) {
-//		logConsole("Loading \(file)")
 		if let parser = XMLParser(contentsOf: file) {
 			parser.delegate = self
-			logConsole("will parse \(currentXib)")
 			if parser.parse() {
 //				logConsole("parsed!")
 			} else {
@@ -69,18 +57,18 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		table.id = tableId
 		table.viewBased = viewBased
 
-		if let tables = tableInfo[currentXib] {
+		if let tables = tableInfo[currentXib.lastPathComponent] {
 			var array = [table]
 			array.append(contentsOf: tables)
-			tableInfo[currentXib] = array
+			tableInfo[currentXib.lastPathComponent] = array
 		} else {
-			tableInfo[currentXib] = [table]
+			tableInfo[currentXib.lastPathComponent] = [table]
 		}
 //		logConsole("new table added: \(table)")
 	}
 
 	func updateTableName() {
-		if let tables = tableInfo[currentXib] {
+		if let tables = tableInfo[currentXib.lastPathComponent] {
 			for table in tables {
 				if let name = outletMap[table.id] {
 					table.outletName = name
@@ -97,13 +85,10 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 	func parserDidEndDocument(_ parser: XMLParser) {
 		updateTableName()
 		parser.delegate = nil
-//		parseNext()
 	}
 
 	func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-		//		logConsole("hit elelment: \(elementName)")
 		if elementName == "tableView" {
-			//			logConsole("tableView element found: \(attributeDict)")
 			var viewBased = false
 			if let tableId = attributeDict["id"] {
 				if let viewBasedAttr = attributeDict["viewBased"],
@@ -127,13 +112,6 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		logConsole(validationError.localizedDescription)
 	}
 
-//	func parseNext() {
-//		index += 1
-//		if index < xibURLArray.count {
-//			readFile(xibURLArray[index])
-//		}
-//	}
-
 	func parse(_ sourceFolder: String) {
 		self.xibURLArray = getXibURLs(in: sourceFolder)
 		logConsole("Total xibs: \(xibURLArray.count)")
@@ -145,7 +123,27 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		}
 
 		logConsole("Found \(tableInfo.count) xibs contains tableviews")
-		logConsole("\(tableInfo.values)")
-//		parseNext()
+//		logConsole("\(tableInfo.values)")
+	}
+
+	/// number of xib files that contain tableview
+	func xibCount() -> Int {
+		return tableInfo.count
+	}
+
+	func allTables() -> [Table] {
+		return tableInfo.values.flatMap { $0 }
+	}
+
+	func tableCount() -> Int {
+		return allTables().count
+	}
+
+	func viewBasedTableCount() -> Int {
+		return allTables().filter { $0.viewBased }.count
+	}
+
+	func cellBasedTableCount() -> Int {
+		return allTables().filter { !$0.viewBased }.count
 	}
 }

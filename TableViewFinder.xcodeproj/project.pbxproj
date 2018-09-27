@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		78D585FC215D3C4700275D2A /* TableViewFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D585FB215D3C4700275D2A /* TableViewFinder.swift */; };
+		78D585FE215D404300275D2A /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D585FD215D404300275D2A /* Table.swift */; };
+		78D58600215D463900275D2A /* TableViewFinder+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D585FF215D463900275D2A /* TableViewFinder+JSON.swift */; };
+		78D58602215D466000275D2A /* TableViewFinder+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D58601215D466000275D2A /* TableViewFinder+HTML.swift */; };
 		OBJ_18 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* main.swift */; };
 		OBJ_25 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		78D585FB215D3C4700275D2A /* TableViewFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewFinder.swift; sourceTree = "<group>"; };
+		78D585FD215D404300275D2A /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
+		78D585FF215D463900275D2A /* TableViewFinder+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableViewFinder+JSON.swift"; sourceTree = "<group>"; };
+		78D58601215D466000275D2A /* TableViewFinder+HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableViewFinder+HTML.swift"; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		OBJ_9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		"TableViewFinder::TableViewFinder::Product" /* TableViewFinder */ = {isa = PBXFileReference; lastKnownFileType = text; path = TableViewFinder; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +75,9 @@
 			children = (
 				OBJ_9 /* main.swift */,
 				78D585FB215D3C4700275D2A /* TableViewFinder.swift */,
+				78D585FF215D463900275D2A /* TableViewFinder+JSON.swift */,
+				78D585FD215D404300275D2A /* Table.swift */,
+				78D58601215D466000275D2A /* TableViewFinder+HTML.swift */,
 			);
 			name = TableViewFinder;
 			path = Sources/TableViewFinder;
@@ -138,6 +147,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				78D585FE215D404300275D2A /* Table.swift in Sources */,
+				78D58600215D463900275D2A /* TableViewFinder+JSON.swift in Sources */,
+				78D58602215D466000275D2A /* TableViewFinder+HTML.swift in Sources */,
 				OBJ_18 /* main.swift in Sources */,
 				78D585FC215D3C4700275D2A /* TableViewFinder.swift in Sources */,
 			);
