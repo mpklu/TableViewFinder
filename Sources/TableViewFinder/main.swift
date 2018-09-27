@@ -1,12 +1,73 @@
 //print("Hello, world!")
-let projHome = "/Users/kunlu/Projects/MacPractice/"
-let sourceFolder = projHome + "MacPractice/Source/"
+import Foundation
+import CommandLineKit
+import AppKit
 
-let finder = TableViewFinder()
+let cli = CommandLineKit.CommandLine()
+let sourceFolder = StringOption(shortFlag: "d",
+								longFlag: "directory",
+								required: true,
+								helpMessage: "Find xib files with tableviews in the given directory and sub-folders")
 
-finder.parse(sourceFolder)
+let openResult = BoolOption(shortFlag: "o",
+								longFlag: "open",
+								required: false,
+								helpMessage: "Open result in browser, result is in HTML format by default unless --json option is selected")
 
-let html  = finder.toHtml()
+let usesJSON = BoolOption(shortFlag: "j",
+					  longFlag: "json",
+					  required: false,
+					  helpMessage: "Generate result in json format. Otherwise it is in HTML format by default")
 
-print("")
-print(html)
+
+let verbosity = CounterOption(shortFlag: "v",
+							  longFlag: "verbose",
+							  helpMessage: "Print verbose messages. Use 1 to print out result only. Use 2 to also print out debug information")
+
+cli.addOptions([sourceFolder, openResult, usesJSON, verbosity])
+
+
+do {
+	try cli.parse()
+
+	let finder = TableViewFinder()
+
+	if let level = Verbosity(rawValue: verbosity.value) {
+		finder.logLevel = level
+	}
+
+	finder.parse(sourceFolder.value!)
+
+	var result: String?
+	var ext: String = "html"
+	if usesJSON.value {
+		result = finder.toJsonString()
+		ext = "json"
+	} else {
+		result = finder.toHtml()
+	}
+
+	if verbosity.value > 0 {
+		print("")
+		if let output = result {
+			print(output)
+		}
+	}
+
+	if openResult.value {
+		if let output = result {
+			let tmp = try TemporaryFile(creatingTempDirectoryForFilename: "xibtables.\(ext)")
+			do {
+				try output.write(to: tmp.fileURL, atomically: true, encoding: String.Encoding.ascii)
+				NSWorkspace.shared.open(tmp.fileURL)
+			} catch {
+				print(error.localizedDescription)
+			}
+		}
+	}
+
+
+} catch {
+	cli.printUsage(error)
+}
+

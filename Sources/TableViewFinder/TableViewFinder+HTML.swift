@@ -86,14 +86,14 @@ extension String {
 		return enclosedInTag("span", attributes: ["style": "color: \(color)"])
 	}
 
-	func redColored() -> String { return inlineColored("red") }
-	func blueColored() -> String { return inlineColored("blue") }
+	func red() -> String { return inlineColored("red") }
+	func blue() -> String { return inlineColored("blue") }
 
 }
 
 extension Table {
 	func toHtml() -> String {
-		return outletName.htmlTableCell() + (viewBased ? "view".blueColored() : "cell".redColored()).htmlTableCell()
+		return outletName.htmlTableCell() + (viewBased ? "view".blue() : "cell".red()).htmlTableCell()
 	}
 }
 
@@ -129,9 +129,9 @@ extension TableViewFinder {
 
 	private func tableHeader() -> String {
 		var ret = "File ( "
-			+ "cell-based".redColored()
+			+ "cell-based".red()
 			+ " | "
-			+ "view-based".blueColored()
+			+ "view-based".blue()
 			+ " )"
 
 		ret = ret.enclosedInTag("th")
@@ -155,8 +155,8 @@ extension TableViewFinder {
 
 	private func header() -> String {
 		var ret = "Number of Xibs: \(xibCount())".enclosedInTag("h3")
-		let cellCountHtml = "\(cellBasedTableCount())".redColored()
-		let viewCountHtml = "\(viewBasedTableCount())".blueColored()
+		let cellCountHtml = "\(cellBasedTableCount())".red()
+		let viewCountHtml = "\(viewBasedTableCount())".blue()
 		ret += "Number of Tables: \(tableCount()) ( \(cellCountHtml) | \(viewCountHtml) )"
 			.enclosedInTag("h3")
 		return ret
@@ -167,8 +167,8 @@ extension TableViewFinder {
 		let viewBasedCount = xib.tables.filter { $0.viewBased }.count
 		let cellBasedCount = xib.tables.count - viewBasedCount
 
-		let cellCountHtml = "\(cellBasedCount)".redColored()
-		let viewCountHtml = "\(viewBasedCount)".blueColored()
+		let cellCountHtml = "\(cellBasedCount)".red()
+		let viewCountHtml = "\(viewBasedCount)".blue()
 
 		let title = xib.name + " ( \(cellCountHtml) | \(viewCountHtml) )"
 

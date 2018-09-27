@@ -7,7 +7,15 @@
 
 import Foundation
 
+enum Verbosity: Int {
+	case noResult = 0
+	case resultOnly = 1
+	case debug = 2
+}
+
 class TableViewFinder: NSObject, XMLParserDelegate {
+	var logLevel: Verbosity = .noResult
+
 	var tableInfo = [String: [Table]]()
 	var outletMap = [String: String]()
 
@@ -20,9 +28,11 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		return URL(fileURLWithPath: NSHomeDirectory())
 	}
 
-	func logConsole(_ msg: String) {
-		print(msg)
-		print("")
+	func logConsole(_ msg: String, level: Verbosity = .noResult) {
+		if level.rawValue <= logLevel.rawValue {
+			print(msg)
+			print("")
+		}
 	}
 
 	func readFile(_ file: URL) {
@@ -74,11 +84,11 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 					table.outletName = name
 					continue;
 				} else {
-					logConsole("Found no outlet name for \(table)!!")
+					logConsole("Found no outlet name for \(table)!!", level: .debug)
 				}
 			}
 		} else {
-			logConsole("Found no tableview in \(currentXib.lastPathComponent) ")
+			logConsole("Found no tableview in \(currentXib.lastPathComponent) ", level: .debug)
 		}
 	}
 
@@ -105,11 +115,11 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		}
 	}
 	func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
-		logConsole(parseError.localizedDescription)
+		logConsole(parseError.localizedDescription, level: .debug)
 	}
 
 	func parser(_ parser: XMLParser, validationErrorOccurred validationError: Error) {
-		logConsole(validationError.localizedDescription)
+		logConsole(validationError.localizedDescription, level: .debug)
 	}
 
 	func parse(_ sourceFolder: String) {
