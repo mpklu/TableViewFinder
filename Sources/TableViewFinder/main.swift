@@ -4,27 +4,27 @@ import CommandLineKit
 import AppKit
 
 let cli = CommandLineKit.CommandLine()
-let sourceFolder = StringOption(shortFlag: "d".lightRed(),
-								longFlag: "directory".lightRed(),
+let sourceFolder = StringOption(shortFlag: "d",
+								longFlag: "directory",
 								required: true,
 								helpMessage: "Find xib files with tableviews in the given directory and sub-folders")
 
-let openResult = BoolOption(shortFlag: "o".lightYellow(),
-								longFlag: "open".lightYellow(),
+let openResult = BoolOption(shortFlag: "o",
+								longFlag: "open",
 								required: false,
 								helpMessage: "Open result in browser, result is in HTML format by default unless --json option is selected")
 
-let usesJSON = BoolOption(shortFlag: "j".lightBlue(),
-					  longFlag: "json".lightBlue(),
+let usesJSON = BoolOption(shortFlag: "j",
+					  longFlag: "json",
 					  required: false,
 					  helpMessage: "Generate result in json format. Otherwise it is in HTML format by default")
 
 
-let verbosity = CounterOption(shortFlag: "v".lightCyan(),
-							  longFlag: "verbose".lightCyan(),
+let verbosity = CounterOption(shortFlag: "v",
+							  longFlag: "verbose",
 							  helpMessage: "Print verbose messages. Use 1 to print out result only. Use 2 to also print out debug information")
 
-let tableType = StringOption(longFlag: "type".lightMagenta(), helpMessage: "Type of table view. Ex: --type=cell or --type=view for cell-based and view-based tableviews accordingly")
+let tableType = StringOption(longFlag: "type", helpMessage: "Type of table view. Ex: --type=cell or --type=view for cell-based and view-based tableviews accordingly")
 
 cli.addOptions([sourceFolder, openResult, usesJSON, verbosity, tableType])
 
