@@ -9,7 +9,7 @@ import Foundation
 
 import Foundation
 extension String {
-	func enclosedInTag(_ tag: String,
+	func tagged(_ tag: String,
 					   attributes: [String: String]? = nil) -> String {
 		if let attr = attributes {
 			var ret = "<\(tag)"
@@ -23,7 +23,7 @@ extension String {
 		}
 	}
 
-	static func emptyTag(_ tag: String,
+	static func emptyTagged(_ tag: String,
 					   attributes: [String: String]? = nil) -> String {
 		if let attr = attributes {
 			var ret = "<\(tag)"
@@ -57,33 +57,33 @@ extension String {
 	}
 
 	func htmlTableRow() -> String {
-		return enclosedInTag("tr")
+		return tagged("tr")
 	}
 
 	func htmlTableCell() -> String {
-		return enclosedInTag("td")
+		return tagged("td")
 	}
 
 	func rightAlignedNoWrapCell() -> String {
-		return enclosedInTag("td", attributes: ["align": "right",
+		return tagged("td", attributes: ["align": "right",
 												"nowrap": "nowrap"])
 	}
 
 	static func emptyTableCell() -> String {
-		return "&nbsp;".enclosedInTag("td")
+		return "&nbsp;".tagged("td")
 	}
 
 	static func script(with url: URL) -> String {
-		return url.absoluteString.enclosedInTag("script")
+		return url.absoluteString.tagged("script")
 	}
 
 	static func css(with url: URL) -> String {
-		return String.emptyTag("link", attributes: ["rel": "stylesheet",
+		return String.emptyTagged("link", attributes: ["rel": "stylesheet",
 													"href": url.absoluteString])
 	}
 
 	func inlineColored(_ color: String) -> String {
-		return enclosedInTag("span", attributes: ["style": "color: \(color)"])
+		return tagged("span", attributes: ["style": "color: \(color)"])
 	}
 
 	func red() -> String { return inlineColored("red") }
@@ -105,17 +105,17 @@ extension TableViewFinder {
 
 		let head = htmlHead()
 
-		let body = bodyContent().enclosedInTag("body")
+		let body = bodyContent().tagged("body")
 
-		ret += (head + body).enclosedInTag("html")
+		ret += (head + body).tagged("html")
 
 		return ret
 	}
 
 	func htmlHead() -> String {
-		var ret = "Tables In Xibs".enclosedInTag("title")
+		var ret = "Tables In Xibs".tagged("title")
 
-		ret += String.emptyTag("meta", attributes: ["name": "viewport",
+		ret += String.emptyTagged("meta", attributes: ["name": "viewport",
 													   "content": "width=device-width, initial-scale=1"])
 
 		ret += String.css(with: URL(string: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")!)
@@ -124,7 +124,7 @@ extension TableViewFinder {
 
 		ret += String.script(with: URL(string: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")!)
 
-		return ret.enclosedInTag("head")
+		return ret.tagged("head")
 	}
 
 	private func tableHeader() -> String {
@@ -134,11 +134,11 @@ extension TableViewFinder {
 			+ "view-based".blue()
 			+ " )"
 
-		ret = ret.enclosedInTag("th")
-		ret += "IBOutlet Name".enclosedInTag("th")
-		ret += "Type".enclosedInTag("th")
+		ret = ret.tagged("th")
+		ret += "IBOutlet Name".tagged("th")
+		ret += "Type".tagged("th")
 
-		return ret.htmlTableRow().enclosedInTag("thead")
+		return ret.htmlTableRow().tagged("thead")
 	}
 
 	private func bodyContent() -> String {
@@ -149,16 +149,24 @@ extension TableViewFinder {
 			tableElement += html(for: xib)
 		}
 
-		let div = header() + tableElement.enclosedInTag("table", attributes: ["class": "table table-condensed"])
-		return div.enclosedInTag("div", attributes: ["class": "container"])
+		let div = header() + tableElement.tagged("table", attributes: ["class": "table table-condensed"])
+		return div.tagged("div", attributes: ["class": "container"])
 	}
 
+	private func footer() -> String {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+		let formattedDate = formatter.string(from: Date())
+		let footer = "Generated at " + formattedDate
+		return footer.tagged("p").tagged("footer")
+	}
 	private func header() -> String {
-		var ret = "Number of Xibs: \(xibCount())".enclosedInTag("h3")
+		var ret = title().tagged("h1")
+		ret += "Number of Xibs: \(xibCount())".tagged("h3")
 		let cellCountHtml = "\(cellBasedTableCount())".red()
 		let viewCountHtml = "\(viewBasedTableCount())".blue()
 		ret += "Number of Tables: \(tableCount()) ( \(cellCountHtml) | \(viewCountHtml) )"
-			.enclosedInTag("h3")
+			.tagged("h3")
 		return ret
 	}
 
@@ -175,14 +183,14 @@ extension TableViewFinder {
 		if xib.tables.count > 1 {
 			var index = 0
 			for table in xib.tables {
-				var tableRow =  index == 0 ? title.enclosedInTag("td", attributes: ["rowspan": "\(xib.tables.count)"]) : ""
+				var tableRow =  index == 0 ? title.tagged("td", attributes: ["rowspan": "\(xib.tables.count)"]) : ""
 				tableRow += table.toHtml()
 				ret += tableRow.htmlTableRow()
 				index += 1
 			}
 		} else {
 			if let table = xib.tables.first {
-				var tableRow =  title.enclosedInTag("td")
+				var tableRow =  title.tagged("td")
 				tableRow += table.toHtml()
 				ret += tableRow.htmlTableRow()
 			}

@@ -7,6 +7,7 @@ let package = Package(
     name: "TableViewFinder",
     dependencies: [
         // Dependencies declare other packages that this package depends on.
+		.package(url: "https://github.com/mtynior/ColorizeSwift.git", from: "1.2.0"),
 		.package(url: "https://github.com/jatoben/CommandLine", from: "3.0.0-pre1"),
     ],
     targets: [
@@ -14,6 +15,6 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "TableViewFinder",
-            dependencies: ["CommandLine"]),
+            dependencies: ["CommandLine", "ColorizeSwift"]),
     ]
 )

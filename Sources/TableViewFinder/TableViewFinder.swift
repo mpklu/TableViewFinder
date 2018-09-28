@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ColorizeSwift
 
 enum Verbosity: Int {
 	case noResult = 0
@@ -13,11 +14,18 @@ enum Verbosity: Int {
 	case debug = 2
 }
 
+enum TableFilter: String {
+	case all = "all"
+	case cellBased = "cell"
+	case viewBased = "view"
+}
+
 class TableViewFinder: NSObject, XMLParserDelegate {
 	var logLevel: Verbosity = .noResult
-
+	var typeFilter: TableFilter = .all
 	var tableInfo = [String: [Table]]()
 	var outletMap = [String: String]()
+	var sourceURL = URL(fileURLWithPath: NSHomeDirectory())
 
 	var xibURLArray: [URL] = []
 	var index = 0
@@ -59,8 +67,21 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 		return ret
 	}
 
+	private func shouldAddTable(_ viewBased: Bool) -> Bool {
+		switch self.typeFilter {
+		case .all:
+			return true
+		case .cellBased:
+			return viewBased == false
+		case .viewBased:
+			return viewBased
+		}
+	}
+
 	func addTable(byId tableId: String,
 				  viewBased: Bool = false) {
+		
+		if shouldAddTable(viewBased) == false { return }
 
 		let table = Table()
 		table.xib = currentXib
@@ -84,11 +105,11 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 					table.outletName = name
 					continue;
 				} else {
-					logConsole("Found no outlet name for \(table)!!", level: .debug)
+					logConsole("Found no outlet name for \(table)!!".red(), level: .debug)
 				}
 			}
 		} else {
-			logConsole("Found no tableview in \(currentXib.lastPathComponent) ", level: .debug)
+			logConsole("Found no tableview in \(currentXib.lastPathComponent) ".red(), level: .debug)
 		}
 	}
 
@@ -123,8 +144,9 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 	}
 
 	func parse(_ sourceFolder: String) {
+		sourceURL = URL(fileURLWithPath: sourceFolder)
 		self.xibURLArray = getXibURLs(in: sourceFolder)
-		logConsole("Total xibs: \(xibURLArray.count)")
+		logConsole("Total xibs: \(xibURLArray.count)".cyan())
 		index = -1
 
 		for file in xibURLArray {
@@ -132,7 +154,7 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 			readFile(file)
 		}
 
-		logConsole("Found \(tableInfo.count) xibs contains tableviews")
+		logConsole("Found \(tableInfo.count) xibs contains tableviews".lightBlue())
 //		logConsole("\(tableInfo.values)")
 	}
 
@@ -155,5 +177,20 @@ class TableViewFinder: NSObject, XMLParserDelegate {
 
 	func cellBasedTableCount() -> Int {
 		return allTables().filter { !$0.viewBased }.count
+	}
+
+	func title() -> String {
+		var ret = ""
+		switch self.typeFilter {
+		case .all:
+			ret = "Tableviews"
+		case .cellBased:
+			ret = "Cell-based Tableviews"
+		case .viewBased:
+			ret = "View-based Tableviews"
+		}
+
+		ret += " Under .../\(sourceURL.lastPathComponents(3))"
+		return ret
 	}
 }

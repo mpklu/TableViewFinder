@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "ColorizeSwift",
+        "repositoryURL": "https://github.com/mtynior/ColorizeSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "16cb4545a54311ca29d314fa3b907296285cfde9",
+          "version": "1.2.0"
+        }
+      },
+      {
         "package": "CommandLine",
         "repositoryURL": "https://github.com/jatoben/CommandLine",
         "state": {

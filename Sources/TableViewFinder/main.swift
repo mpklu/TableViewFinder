@@ -4,27 +4,29 @@ import CommandLineKit
 import AppKit
 
 let cli = CommandLineKit.CommandLine()
-let sourceFolder = StringOption(shortFlag: "d",
-								longFlag: "directory",
+let sourceFolder = StringOption(shortFlag: "d".lightRed(),
+								longFlag: "directory".lightRed(),
 								required: true,
 								helpMessage: "Find xib files with tableviews in the given directory and sub-folders")
 
-let openResult = BoolOption(shortFlag: "o",
-								longFlag: "open",
+let openResult = BoolOption(shortFlag: "o".lightYellow(),
+								longFlag: "open".lightYellow(),
 								required: false,
 								helpMessage: "Open result in browser, result is in HTML format by default unless --json option is selected")
 
-let usesJSON = BoolOption(shortFlag: "j",
-					  longFlag: "json",
+let usesJSON = BoolOption(shortFlag: "j".lightBlue(),
+					  longFlag: "json".lightBlue(),
 					  required: false,
 					  helpMessage: "Generate result in json format. Otherwise it is in HTML format by default")
 
 
-let verbosity = CounterOption(shortFlag: "v",
-							  longFlag: "verbose",
+let verbosity = CounterOption(shortFlag: "v".lightCyan(),
+							  longFlag: "verbose".lightCyan(),
 							  helpMessage: "Print verbose messages. Use 1 to print out result only. Use 2 to also print out debug information")
 
-cli.addOptions([sourceFolder, openResult, usesJSON, verbosity])
+let tableType = StringOption(longFlag: "type".lightMagenta(), helpMessage: "Type of table view. Ex: --type=cell or --type=view for cell-based and view-based tableviews accordingly")
+
+cli.addOptions([sourceFolder, openResult, usesJSON, verbosity, tableType])
 
 
 do {
@@ -34,6 +36,11 @@ do {
 
 	if let level = Verbosity(rawValue: verbosity.value) {
 		finder.logLevel = level
+	}
+
+	if let type = tableType.value,
+		let typeFilter = TableFilter(rawValue: type) {
+		finder.typeFilter = typeFilter
 	}
 
 	finder.parse(sourceFolder.value!)

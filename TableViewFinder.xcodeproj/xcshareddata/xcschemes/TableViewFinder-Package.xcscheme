@@ -28,6 +28,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ColorizeSwift::ColorizeSwift"
+               BuildableName = "ColorizeSwift.framework"
+               BlueprintName = "ColorizeSwift"
+               ReferencedContainer = "container:TableViewFinder.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "CommandLine::CommandLineKit"
                BuildableName = "CommandLineKit.framework"
                BlueprintName = "CommandLineKit"
